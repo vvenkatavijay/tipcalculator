@@ -51,14 +51,15 @@ class ViewController: UIViewController {
         tipControl.selectedSegmentIndex = defaults.integerForKey("defaultTip")
         tipFineCtrl.value = Float(tipPossiblePct[tipControl.selectedSegmentIndex])
         billField.placeholder = currencySymbolArray[defaults.integerForKey("currencyRow")]
+        
         self.updateTotal()
         billField.becomeFirstResponder()
-        self.animateTipAndTotal(0)
+        self.animateTipAndTotal(time:0)
     }
 
     @IBAction func onEditingChanged(sender: AnyObject) {
         self.updateTotal()
-        self.animateTipAndTotal(0.3)
+        self.animateTipAndTotal(time:0.3)
     }
     
     @IBAction func onEditingFineCtrl(sender: AnyObject) {
@@ -71,22 +72,20 @@ class ViewController: UIViewController {
         }
         
         self.updateTotal()
-        self.animateTipAndTotal(0.3)
+        self.animateTipAndTotal(time:0.3)
     }
     
     @IBAction func onEditingTipPct(sender: AnyObject) {
         tipFineCtrl.value = Float(tipPossiblePct[tipControl.selectedSegmentIndex])
         self.updateTotal()
-        self.animateTipAndTotal(0.3)
+        self.animateTipAndTotal(time:0.3)
 
     }
     
     func updateTotal() {
 
         var tipPct = tipFineCtrl.value
-        
         var billAmount = (billField.text as NSString).doubleValue
-        println(billAmount)
         var tip = billAmount * Double(tipPct)
         var total = billAmount + tip
         let currencySymbol = currencySymbolArray[defaults.integerForKey("currencyRow")]
@@ -97,28 +96,14 @@ class ViewController: UIViewController {
         tipLabel.text = currencySymbol + dropFirst(comaFormatter.stringFromNumber(tip)!)
         totalLabel.text = currencySymbol + dropFirst(comaFormatter.stringFromNumber(total)!)
         tipPctText.text = String(format:"%.2f", tipPct*100) + "%"
+        
         totalByTwo.text = currencySymbol + dropFirst(comaFormatter.stringFromNumber(total/2)!)
         totalByThree.text = currencySymbol + dropFirst(comaFormatter.stringFromNumber(total/3)!)
         totalByFour.text = currencySymbol + dropFirst(comaFormatter.stringFromNumber(total/4)!)
         
     }
-
-    /*static func convertToDouble(textToConvert:String) -> Double {
-        return (join("",textToConvert.componentsSeparatedByString(",")) as NSString).doubleValue
-    }
     
-    static func convertToFormattedString(value:Double) -> String {
-        var comaFormatter = NSNumberFormatter()
-        comaFormatter.numberStyle = .DecimalStyle
-        
-        if value == 0 {
-            return ""
-        } else {
-            return dropFirst(comaFormatter.stringFromNumber(value)!)
-        }
-    } */
-    
-    func animateTipAndTotal(transformTime: Double) {
+    func animateTipAndTotal(time transformTime: Double) {
         if billField.text.isEmpty {
             if tipAndTotalView.alpha == 1 {
                 UIView.animateWithDuration(transformTime, animations: {
